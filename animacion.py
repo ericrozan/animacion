@@ -7,6 +7,7 @@ import matplotlib.ticker as tck
 import pylab
 import os 
 
+
 golden_mean = (math.sqrt(5)-1.0)/2.0        # Aesthetic ratio
 #fig_width = 3+3/8                # width  in inches
 fig_width=8
@@ -95,37 +96,26 @@ def grafica_timestep_j(j,N,xx,yy,tt,colores,c1,width,length,door_min,door_max):
 	
 	lin=5 	#Ancho de linea del recinto
 
-	#plt.plot([0,length],[0,0],'k',lw=lin)
-	#plt.plot([0,length],[width,width],'k',lw=lin)
-	#plt.plot([0,0],[0,width],'k',lw=lin)
-
-	plt.plot([0,door_min],[width,width],'k',lw=lin)
-	plt.plot([door_max,length],[width,width],'k',lw=lin)
-
-	plt.plot([xi_obst,xf_obst],[yi_obst,yf_obst],'k',lw=lin)
-
-	#	Elegir el tamanio de las personas:	
-	size= 100 #650 	#zoom en la puerta
-	#size=30 	#vista de lejos
+	fig, ax = plt.subplots()
+	circles = [plt.Circle((xi,yi), radius=0.23,color='r', linewidth=0) for xi,yi in zip(x,y)]
+	c = matplotlib.collections.PatchCollection(circles,match_original=True)
 	
-	plt.scatter(x,y,edgecolor='black',lw=c1*3.5,s=size,color=colores,alpha=1)
+	wall1 = plt.Rectangle((0,width), door_min, height=0.2,color='k')
+	wall2 = plt.Rectangle((door_max,width), width, height=0.2,color='k')
+	panel = plt.Rectangle((xi_obst,yi_obst), width=abs(xf_obst-xi_obst), height=0.2,color='k')
+	ax.add_patch(wall1)
+	ax.add_patch(wall2)
+	ax.add_patch(panel)
+	ax.add_collection(c)
 
-	plt.axes().xaxis.set_tick_params(which='both', top = True,direction='out')
-	plt.axes().yaxis.set_tick_params(which='both', top = True,direction='out')
-	#plt.xticks(np.arange(0,length+1,1))
-	#plt.yticks(np.arange(0,width+1,1))
+	ax.set_xlim(40, 60)
+	ax.set_ylim(85, 105)
+	ax.set_xlabel('x (m)')
+	ax.set_ylabel('y (m)')
+	ax.set_title('t =%05.2f'%(t))
 
-	#	Zoom en la puerta
-	plt.xlim(40,60)
-	plt.ylim(90,102)
 
-	#	Vista de lejos
-	#plt.xlim(0,length)
-	#plt.ylim(0,width)
 
-	pylab.xlabel('x (m)')
-	pylab.ylabel('y (m)')
-	plt.title('t =%05.2f'%(t))
 
 def from_pic_to_vid(video_filename,output_folder,framerate):
 	'''	
